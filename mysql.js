@@ -4,7 +4,6 @@ var settings = require('./settings');
 var sqls = require('./sqls')
 var connection;
 
-var retCode = -1;
 var connect2mysql = function(){
     connection = mysql.createConnection({
         host     : settings.host,
@@ -16,7 +15,7 @@ var connect2mysql = function(){
 
 connect2mysql();
 
-var insert = function(sql_phone, sql_name, sql_passwd, sql_type){
+var insert = function(sql_phone, sql_name, sql_passwd, sql_type, callback){
 
     connect2mysql();
 
@@ -31,22 +30,26 @@ var insert = function(sql_phone, sql_name, sql_passwd, sql_type){
             //console.log(error);
             retCode = 1001; 
         }
+        callback(retCode);
     });
-    return retCode;
 }
 
-var check = function(sql_phone, sql_passwd){
+var check = function(sql_phone, sql_passwd, callback){
+
     connect2mysql();
-    var  userGetSql = `SELECT * FROM users WHERE phone = '${sql_phone}' AND passwd = '${sql_passwd}'`;
-    //查 query
-    connection.query(userGetSql,function (err, result) {
+
+    var  addSqlParams = [sql_phone, sql_passwd];
+
+    connection.query(sqls.query, addSqlParams, function (err, result) {
         if (err) throw err;
-        console.log("result",result)
         if(result.length==0){
+            retCode = 1002;
             console.log(("用户名或密码错误"))
         }else{
+            retCode = 0;
             console.log(("登录成功"))
         }
+        callback(retCode);
     });
 }
 
