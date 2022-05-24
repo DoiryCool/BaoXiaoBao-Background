@@ -15,8 +15,8 @@ app.post('/userRegister', function(req, res) {
     if (DEBUG) console.log(params);
     if (params.inviteCode != "doiry") {
         var data = {
-            "code": RUNTIME_INFO.CODE.INVALID_INVITE_CODE,
-             "msg": RUNTIME_INFO.MSG.INVALID_INVITE_CODE_MSG
+            "code": RUNTIME_INFO.LOGIN_CODE.INVALID_INVITE_ERROR.CODE,
+             "msg": RUNTIME_INFO.LOGIN_CODE.INVALID_INVITE_ERROR.MSG
             };
         res.end(JSON.stringify(data));
     }
@@ -25,23 +25,32 @@ app.post('/userRegister', function(req, res) {
         if (params.identity == "teacher"){
             utype = 1;
         }
-        sqlApi.insert(params.phone, params.name, params.password, utype, function(retCode){
-            if (retCode == RUNTIME_INFO.CODE.SUCCESS_CODE){
-                var data = {
-                    "code": RUNTIME_INFO.CODE.SUCCESS_CODE,
-                     "msg": RUNTIME_INFO.MSG.SUCCESS_CODE_MSG
-                    };
-                res.end(JSON.stringify(data));
-            }
-            else if(retCode == RUNTIME_INFO.CODE.MYSQL_ERROR_CODE){
-                var data = {
-                    "code": RUNTIME_INFO.CODE.MYSQL_ERROR_CODE,
-                     "msg": RUNTIME_INFO.MSG.MYSQL_ERROR_MSG
-                    };
-                res.end(JSON.stringify(data));
-            }
-            if (DEBUG) console.log("Return Code : " + retCode);
-        });
+        if (params.password.length < 8){
+            var data = {
+                "code": RUNTIME_INFO.LOGIN_CODE.PARAM_ERROR.CODE,
+                 "msg": RUNTIME_INFO.LOGIN_CODE.PARAM_ERROR.MSG
+                };
+            res.end(JSON.stringify(data));
+        }
+        else {
+            sqlApi.insert(params.phone, params.name, params.password, utype, function(retCode){
+                if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
+                    var data = {
+                        "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
+                         "msg": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.MSG
+                        };
+                    res.end(JSON.stringify(data));
+                }
+                else if(retCode == RUNTIME_INFO.LOGIN_CODE.MYSQL_ERROR.CODE){
+                    var data = {
+                        "code": RUNTIME_INFO.LOGIN_CODE.MYSQL_ERROR.CODE,
+                         "msg": RUNTIME_INFO.LOGIN_CODE.MYSQL_ERROR.MSG
+                        };
+                    res.end(JSON.stringify(data));
+                }
+                if (DEBUG) console.log("Return Code : " + retCode);
+            });
+        }
   }
 })
 
@@ -50,17 +59,17 @@ app.post('/userLogin', function(req, res) {
     var params = req.body;
     if (DEBUG) console.log(params);
     sqlApi.check(params.phone, params.password, function(retCode){
-        if (retCode == RUNTIME_INFO.CODE.SUCCESS_CODE){
+        if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
             var data = {
-                "code": RUNTIME_INFO.CODE.SUCCESS_CODE, 
-                "msg": RUNTIME_INFO.MSG.SUCCESS_CODE_MSG
+                "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
+                "msg": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.MSG
             };
             res.end(JSON.stringify(data));
         }
         else {
             var data = {
-                "code": RUNTIME_INFO.CODE.LOGIN_ERROR_CODE, 
-                "msg": RUNTIME_INFO.MSG.LOGIN_ERROR_CODE_MSG
+                "code": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.CODE,
+                "msg": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.MSG
             };
             res.end(JSON.stringify(data));
         }
