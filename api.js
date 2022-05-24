@@ -35,8 +35,18 @@ app.post('/userRegister', function(req, res) {
             utype = 1;
         }
         retCode = sqlApi.insert(params.phone, params.name, params.password, utype);
-        if (retCode == 0){
-            var data = {"code": retCode, "msg": "success"};
+        if (retCode == RUNTIME_INFO.CODE.SUCCESS_CODE){
+            var data = {
+                "code": RUNTIME_INFO.CODE.SUCCESS_CODE,
+                 "msg": RUNTIME_INFO.MSG.SUCCESS_CODE_MSG
+                };
+            res.end(JSON.stringify(data));
+        }
+        else if(retCode == RUNTIME_INFO.CODE.MYSQL_ERROR_CODE){
+            var data = {
+                "code": RUNTIME_INFO.CODE.MYSQL_ERROR_CODE,
+                 "msg": RUNTIME_INFO.MSG.MYSQL_ERROR_MSG
+                };
             res.end(JSON.stringify(data));
         }
   }
