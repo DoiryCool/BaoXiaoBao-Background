@@ -13,7 +13,7 @@ var LOGIN_CODE = {
     },
     MYSQL_ERROR :   {
         CODE    :   1001,
-        MSG     :   "SQL ERROR,CHECK YOUR INFORMATION!",
+        MSG     :   "SQL ERROR, CHECK YOUR INFORMATION!",
     },
     LOGIN_ERROR :{
         CODE    :   1002,
@@ -21,6 +21,11 @@ var LOGIN_CODE = {
     }
 }
 
+PROFILE_CODE = {
+    
+}
+
 module.exports={
-    LOGIN_CODE
+    LOGIN_CODE,
+    PROFILE_CODE
 }
