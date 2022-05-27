@@ -16,11 +16,11 @@ var connect2mysql = function(){
 
 connect2mysql();
 
-var insert = function(sql_phone, sql_name, sql_passwd, sql_type, token, t_id, callback){
+var insert = function(id, sql_phone, sql_name, sql_passwd, sql_type, token, t_id, callback){
 
     connect2mysql();
 
-    var  addSqlParams = [sql_phone, sql_name, sql_passwd, sql_type, token, t_id];
+    var  addSqlParams = [id, sql_phone, sql_name, sql_passwd, sql_type, token, t_id];
 
     connection.query(sqls.insert,addSqlParams,function (error, result) {
         if (error == null) {
@@ -72,17 +72,56 @@ var getProfile = function(sql_phone, callback){
     });
 }
 
-var getBinfInfo = function(token, callback){
+var getBindInfo = function(token, callback){
 
     connect2mysql();
 
-    connection.query(sqls.binfInfoSql,function (error, result) {
+    connection.query(sqls.bindInfoSql,function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            connection.end();
+            retCode = 1001; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        connection.end()
+        callback(data);
+    });
+}
+
+var setBind = function(t_id, token, callback){
+
+    connect2mysql();
+
+    var  addSqlParams = [t_id, token];
+    connection.query(sqls.bindSql, addSqlParams, function (error, result) {
         if (error == null) {
             console.log(result);
             connection.end();
             retCode = 0;
         } else {
+            connection.end();
             retCode = 1001; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
+var getBindedInfo = function(token, callback){
+
+    connect2mysql();
+    var  addSqlParams = [token];
+    connection.query(sqls.bindedInfoSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            connection.end();
+            retCode = 1003; 
         }
         var dataString = JSON.stringify(result);
         var data = JSON.parse(dataString);
@@ -94,5 +133,7 @@ module.exports = {
     insert,
     check,
     getProfile,
-    getBinfInfo
+    getBindInfo,
+    getBindedInfo,
+    setBind
 }

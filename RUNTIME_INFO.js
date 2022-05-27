@@ -21,8 +21,11 @@ var LOGIN_CODE = {
     }
 }
 
-PROFILE_CODE = {
-    
+var PROFILE_CODE = {
+    SUCCESS_INFO:   {
+        CODE    :   0,
+        MSG     :   "Success!"
+    }
 }
 
 module.exports={

@@ -4,5 +4,5 @@ module.exports={
     password : '196511685gu',
     database : 'android_api',
     
-    invite_code:  'diry'
+    invite_code:  'doiry'
 }

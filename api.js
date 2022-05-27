@@ -36,8 +36,10 @@ app.post('/userRegister', function(req, res) {
             res.end(JSON.stringify(data));
         }
         else {
-            var token = random(16, {numbers : true, letters:true})
-            sqlApi.insert(params.phone, params.name, params.password, utype, token, params.t_id, function(retCode){
+            var token = random(16, {numbers : true, letters:true});
+            var id = Math.floor(Date.now()/1000);
+            if (DEBUG) console.log(id);
+            sqlApi.insert(id, params.phone, params.name, params.password, utype, token, params.t_id, function(retCode){
                 if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
                     var data = {
                         "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
@@ -71,6 +73,7 @@ app.post('/userLogin', function(req, res) {
                 "token": token
             };
             res.end(JSON.stringify(data));
+            if (DEBUG) console.log(data);
         }
         else {
             var data = {
@@ -136,7 +139,7 @@ app.post('/bindInfo', function(req, res) {
     if (DEBUG) console.log('收到post/bindInfo请求');
     var params = req.body;
     if (DEBUG) console.log(params);
-    sqlApi.getBinfInfo(params.token, function(result){
+    sqlApi.getBindInfo(params.token, function(result){
         if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
             var data = {
                 "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
@@ -159,19 +162,11 @@ app.post('/bindedInfo', function(req, res) {
     if (DEBUG) console.log('收到post/bindedInfo请求');
     var params = req.body;
     if (DEBUG) console.log(params);
-    sqlApi.getBinfInfo(params.token, function(result){
+    sqlApi.getBindedInfo(params.token, function(result){
         if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
-            var data = {
-                "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
-                "msg": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.MSG
-            };
             res.end(JSON.stringify(result));
         }
         else {
-            var data = {
-                "code": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.CODE,
-                "msg": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.MSG
-            };
             res.end(JSON.stringify(data));
         }
     });
@@ -182,13 +177,14 @@ app.post('/bind', function(req, res) {
     if (DEBUG) console.log('收到post/bind请求');
     var params = req.body;
     if (DEBUG) console.log(params);
-    sqlApi.getBinfInfo(params.token, function(result){
+    sqlApi.setBind(params.t_id, params.token, function(result){
         if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
             var data = {
                 "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
                 "msg": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.MSG
             };
             res.end(JSON.stringify(result));
+            if (DEBUG) console.log(result);
         }
         else {
             var data = {
