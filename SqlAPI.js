@@ -24,7 +24,7 @@ var insert = function(id, sql_phone, sql_name, sql_passwd, sql_type, token, t_id
 
     connection.query(sqls.insert,addSqlParams,function (error, result) {
         if (error == null) {
-            console.log(result);
+            //console.log(result);
             connection.end();
             retCode = 0;
         } else {
@@ -45,12 +45,14 @@ var check = function(sql_phone, sql_passwd, callback){
         if (err) throw err;
         if(result.length==0){
             retCode = RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.CODE;
-            console.log(("用户名或密码错误"))
-        }else{
-            retCode = RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE;
-            console.log(("登录成功"))
+            //console.log(("用户名或密码错误"))
+            callback(retCode, "null", -1);
         }
-        callback(retCode, result[0].token);
+        else{
+            retCode = RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE;
+            //console.log(("登录成功"))
+            callback(retCode, result[0].token, result[0].user_type, result[0].uid);
+        }
     });
 }
 
@@ -62,7 +64,7 @@ var getProfile = function(sql_phone, callback){
 
     connection.query(sqls.profile,addSqlParams,function (error, result) {
         if (error == null) {
-            console.log(result);
+            //console.log(result);
             connection.end();
             retCode = RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE;
         } else {
@@ -78,7 +80,7 @@ var getBindInfo = function(token, callback){
 
     connection.query(sqls.bindInfoSql,function (error, result) {
         if (error == null) {
-            console.log(result);
+            //console.log(result);
             retCode = 0;
         } else {
             connection.end();
@@ -98,9 +100,9 @@ var setBind = function(t_id, token, callback){
     var  addSqlParams = [t_id, token];
     connection.query(sqls.bindSql, addSqlParams, function (error, result) {
         if (error == null) {
-            console.log(result);
+            //console.log(result);
             connection.end();
-            retCode = 0;
+            retCode = RUNTIME_INFO.BIND_CODE.SUCCESS_INFO.CODE;
         } else {
             connection.end();
             retCode = 1001; 
@@ -117,7 +119,7 @@ var getBindedInfo = function(token, callback){
     var  addSqlParams = [token];
     connection.query(sqls.bindedInfoSql, addSqlParams, function (error, result) {
         if (error == null) {
-            console.log(result);
+            //console.log(result);
             retCode = 0;
         } else {
             connection.end();
@@ -129,11 +131,90 @@ var getBindedInfo = function(token, callback){
     });
 }
 
+var getBindedInfoT = function(token, callback){
+
+    connect2mysql();
+    var  addSqlParams = [token];
+    connection.query(sqls.bindedInfoTSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            //console.log(result);
+            retCode = 0;
+        } else {
+            connection.end();
+            retCode = 1003; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
+var getBills = function(uid, callback){
+
+    connect2mysql();
+    var  addSqlParams = [uid];
+    connection.query(sqls.billsSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            console.log(error);
+            connection.end();
+            retCode = 1004; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
+var getBillsT = function(uid, callback){
+
+    connect2mysql();
+
+    var  addSqlParams = [uid];
+    connection.query(sqls.billsTSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            console.log(error);
+            connection.end();
+            retCode = 1004; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
+var commit = function(uid, t_id, amount, remark, img_path, callback){
+    connect2mysql();
+    var  addSqlParams = [uid, t_id, amount, remark, img_path];
+    connection.query(sqls.commitSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            console.log(error);
+            connection.end();
+            retCode = 1004; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
 module.exports = {
-    insert,
     check,
+    insert,
+    commit,
+    setBind,
+    getBills,
+    getBillsT,
     getProfile,
     getBindInfo,
     getBindedInfo,
-    setBind
+    getBindedInfoT
 }

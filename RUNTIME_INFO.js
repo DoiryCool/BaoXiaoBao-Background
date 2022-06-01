@@ -28,7 +28,19 @@ var PROFILE_CODE = {
     }
 }
 
+var BIND_CODE = {
+    SUCCESS_INFO:   {
+        CODE    :   0,
+        MSG     :   "Success!"
+    },
+    MYSQL_ERROR :   {
+        CODE    :   3001,
+        MSG     :   "BIND FAILED!",
+    }
+}
+
 module.exports={
     LOGIN_CODE,
-    PROFILE_CODE
+    PROFILE_CODE,
+    BIND_CODE
 }
