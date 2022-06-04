@@ -250,6 +250,30 @@ app.post('/bind', function(req, res) {
 
 })
 
+app.post('/billStatus', function(req, res) {
+    if (DEBUG) console.log('收到post/billStatus');
+    var params = req.body;
+    if (DEBUG) console.log(params);
+    sqlApi.billStatusChange(params.id, params.billStatus, function(result){
+        if (retCode == RUNTIME_INFO.BIND_CODE.SUCCESS_INFO.CODE){
+            var data = {
+                "code": RUNTIME_INFO.BIND_CODE.SUCCESS_INFO.CODE,
+                "msg": RUNTIME_INFO.BIND_CODE.SUCCESS_INFO.MSG
+            };
+            res.end(JSON.stringify(result));
+            if (DEBUG) console.log(result);
+        }
+        else {
+            var data = {
+                "code": RUNTIME_INFO.BIND_CODE.BIND_ERROR.CODE,
+                "msg": RUNTIME_INFO.BIND_CODE.BIND_ERROR.MSG
+            };
+            res.end(JSON.stringify(data));
+        }
+    });
+
+})
+
 app.post('/commit',multipartyMiddleware,(req,res)=>{
     var params = req.body;
     console.log(req.files.file.path);

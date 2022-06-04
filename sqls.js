@@ -8,5 +8,6 @@ module.exports={
     bindInfoSql     : `SELECT * FROM users WHERE user_type = 1`,
     bindedInfoSql     : `SELECT * FROM users WHERE uid IN (SELECT t_id FROM user_bind WHERE user_bind.uid = (SELECT uid FROM users WHERE token = ?))`,
     bindedInfoTSql     : `SELECT * FROM users WHERE uid IN (SELECT uid FROM user_bind WHERE user_bind.t_id = (SELECT uid FROM users WHERE token = ?))`,
-    commitSql     : `INSERT INTO commit(uid, t_id, amount, remark, file) VALUES(?, ?, ?, ?, ?)`
+    commitSql     : `INSERT INTO commit(uid, t_id, amount, remark, file) VALUES(?, ?, ?, ?, ?)`,
+    billStatusChangeSql     : `UPDATE commit SET is_checked = ? WHERE id = ?`
 }

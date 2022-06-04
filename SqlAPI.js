@@ -206,6 +206,24 @@ var commit = function(uid, t_id, amount, remark, img_path, callback){
     });
 }
 
+var billStatusChange = function(id, status, callback){
+    connect2mysql();
+    var  addSqlParams = [status, id];
+    connection.query(sqls.billStatusChangeSql, addSqlParams, function (error, result) {
+        if (error == null) {
+            console.log(result);
+            retCode = 0;
+        } else {
+            console.log(error);
+            connection.end();
+            retCode = 1004; 
+        }
+        var dataString = JSON.stringify(result);
+        var data = JSON.parse(dataString);
+        callback(data);
+    });
+}
+
 module.exports = {
     check,
     insert,
@@ -216,5 +234,6 @@ module.exports = {
     getProfile,
     getBindInfo,
     getBindedInfo,
-    getBindedInfoT
+    getBindedInfoT,
+    billStatusChange
 }
