@@ -313,6 +313,30 @@ app.post('/commit',multipartyMiddleware,(req,res)=>{
     });
 });
 
+app.post('/testInterface', function(req, res) {
+    if (DEBUG) console.log('收到post/testInterface请求');
+    var params = req.body;
+    if (DEBUG) console.log(params);
+    sqlApi.getProfile(params.phone, function(result){
+        if (retCode == RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE){
+            var data = {
+                "code": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.CODE,
+                "msg": RUNTIME_INFO.LOGIN_CODE.SUCCESS_INFO.MSG
+            };
+            res.end(JSON.stringify(result[0]));
+        }
+        else {
+            var data = {
+                "code": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.CODE,
+                "msg": RUNTIME_INFO.LOGIN_CODE.LOGIN_ERROR.MSG
+            };
+            res.end(JSON.stringify(data));
+        }
+        if (DEBUG) console.log(result[0]);
+    });
+    
+})
+
 app.listen(8000, function() {
   console.log('start');
 })
